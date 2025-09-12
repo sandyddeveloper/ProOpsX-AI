@@ -1,9 +1,33 @@
+"use client";
 import Button from "@/components/ui/Button";
 import startBg from "@/assets/stars.png";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export const Hero = () => {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const backgroundPositionY = useTransform(scrollYProgress, [0, 1], [-300, 300]);
+  // useMotionValueEvent(scrollYProgress,"change",(value)=>{
+  //   console.log("scroll progress",value);
+  // });
   return (
-    <section className="h-[592px] md:h-[800px] flex items-center overflow-hidden relative [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" style={{ backgroundImage: `url(${startBg.src})`, }}>
+    <motion.section
+      ref={sectionRef}
+      className="h-[592px] md:h-[800px] flex items-center overflow-hidden relative [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]" style={{ backgroundImage: `url(${startBg.src})`, backgroundPositionY }}
+      animate={{
+        backgroundPositionX: startBg.width,
+      }}
+      transition={{
+        duration: 120,
+        repeat: Infinity,
+        ease: "linear",
+      }}
+    >
       <div className="absolute inset-0 bg-[radial-gradient(75%_75%_at_center_center,rgb(140,69,255,.5)_15%,rgb(14,0,36,.5)_78%,transparent)]"></div>
       <div
         className="absolute 
@@ -18,20 +42,59 @@ export const Hero = () => {
              shadow-[-20px_-20px_50px_rgba(255,255,255,0.5),-20px_-20px_80px_rgba(255,255,255,0.1),0_0_50px_rgb(140,69,255)]
 ">
       </div>
-      <div className="absolute h-[420px] w-[420px] md:h-[580px] md:w-[580px] border border-white opacity-20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <motion.div
+        style={{
+          translateY: '-50%',
+          translateX: '-50%',
+        }}
+        animate={{
+          rotate: "1turn",
+        }}
+        transition={{
+          duration: 60,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute h-[420px] w-[420px] md:h-[580px] md:w-[580px] border border-white opacity-20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="absolute h-2 w-2 left-0 bg-white rounded-full top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute h-2 w-2 left-1/2 bg-white rounded-full top-0 -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute h-5 w-5 left-full border border-white rounded-full top-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center justify-center">
           <div className="h-2 w-2 bg-white rounded-full"></div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="absolute h-[520px] w-[520px] md:h-[780px] md:w-[780px] border border-white/20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed">
-      </div>
-      <div className="absolute h-[620px] w-[620px] md:h-[980px] md:w-[980px] border border-white opacity-20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed">
+      <motion.div
+        style={{
+          translateY: '-50%',
+          translateX: '-50%',
+        }}
+        animate={{
+          rotate: "-1turn",
+        }}
+        transition={{
+          duration: 60,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute h-[520px] w-[520px] md:h-[780px] md:w-[780px] border border-white/20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed">
+      </motion.div>
+      <motion.div
+        style={{
+          translateY: '-50%',
+          translateX: '-50%',
+        }}
+        animate={{
+          rotate: "1turn",
+        }}
+        transition={{
+          duration: 90,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute h-[620px] w-[620px] md:h-[980px] md:w-[980px] border border-white opacity-20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed">
         <div className="absolute h-2 w-2 left-0 bg-white rounded-full top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute h-2 w-2 left-full bg-white rounded-full top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-      </div>
+      </motion.div>
 
 
 
@@ -44,10 +107,10 @@ export const Hero = () => {
           Streamline workflows, boost productivity, and experience the next evolution of smart project execution.
         </p>
         <div className="flex justify-center mt-5">
-          <Button>Get Started</Button>
+          <Button>Get Started Developer!</Button>
         </div>
       </div>
 
-    </section>
+    </motion.section>
   );
 };
