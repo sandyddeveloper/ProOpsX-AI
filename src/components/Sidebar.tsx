@@ -45,28 +45,28 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
       <aside
         className={clsx(
           "fixed top-0 left-0 h-screen max-h-screen flex flex-col transition-all duration-300 ease-in-out z-40 shadow-sm border-r",
-
           // Light / Dark backgrounds & borders
-          "bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700",
-
+          "bg-white border-gray-200 dark:bg-dark dark:border-gray-700",
           // Desktop (lg and up)
           "lg:translate-x-0",
           collapsed ? "lg:w-[70px]" : "lg:w-[240px]",
-
           // Mobile/Tablet (<lg)
           mobileOpen
             ? "translate-x-0 w-[70%] sm:w-[40%]"
             : "-translate-x-full w-[70%] sm:w-[40%]"
         )}
       >
+
+
         {/* Header */}
         <div
           className={clsx(
             "flex items-center justify-between gap-3 mb-4 px-4 py-3 border-b sticky top-0 z-10",
-            "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700",
+            "bg-white dark:bg-dark border-gray-200 dark:border-gray-700",
             collapsed && "justify-center"
           )}
         >
+
           <div className="flex items-center gap-3">
             <Image
               src={Logo}

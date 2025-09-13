@@ -31,75 +31,80 @@ const Header: React.FC<HeaderProps> = ({
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
   }
   return (
-    <header className="w-full sticky top-0 z-10 flex items-center justify-between py-3 px-4 shadow-sm border-b 
-  bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-colors duration-300">
-  
-  {/* Left Section: Sidebar toggle + Search */}
-  <div className="flex items-center gap-3">
-    {/* Desktop toggle */}
-    <div className="hidden lg:block">
-      <IconButton
-        onClick={() => setCollapsed(!collapsed)}
-        aria-label="Toggle sidebar"
-        className="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
-      >
-        <MenuIcon className="text-gray-700 dark:text-gray-300" />
-      </IconButton>
-    </div>
+   <header
+  className="w-full sticky top-0 z-10 flex items-center justify-between py-3 px-4 shadow-sm 
+             border-b-2 border-gray-300 dark:border-medium 
+             bg-gray-50 dark:bg-dark transition-colors duration-300"
+>
 
-    {/* Mobile toggle */}
-    <div className="lg:hidden">
-      <IconButton
-        onClick={() => setMobileOpen(!mobileOpen)}
-        aria-label="Open sidebar"
-        className="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
-      >
-        <MenuIcon className="text-gray-700 dark:text-gray-300" />
-      </IconButton>
-    </div>
 
-    {/* Search box visible only on lg+ */}
-    <div className="hidden lg:block">
-      <SearchBox placeholder="Search here..." width={300} />
-    </div>
-  </div>
+      {/* Left Section: Sidebar toggle + Search */}
+      <div className="flex items-center gap-3">
+        {/* Desktop toggle */}
+        <div className="hidden lg:block">
+          <IconButton
+            onClick={() => setCollapsed(!collapsed)}
+            aria-label="Toggle sidebar"
+            className="hover:bg-gray-200 dark:hover:bg-medium rounded-full transition-colors"
+          >
+            <MenuIcon className="text-gray-700 dark:text-gray-100" />
+          </IconButton>
+        </div>
 
-  {/* Right Section: Theme icons */}
-  <div className="flex items-center gap-3 text-xl">
-    <Button
-      onClick={changeTheme}
-      className="!min-w-[40px] !w-[40px] !h-[40px] !rounded-full 
-                 text-gray-700 dark:text-gray-300 
-                 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-    >
-      {context.theme === "dark" ? (
-        <BsSun size={22} className="text-yellow-400" />
-      ) : (
-        <BsCloudMoon size={22} className="text-blue-500" />
-      )}
-    </Button>
+        {/* Mobile toggle */}
+        <div className="lg:hidden">
+          <IconButton
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Open sidebar"
+            className="hover:bg-gray-200 dark:hover:bg-medium rounded-full transition-colors"
+          >
+            <MenuIcon className="text-gray-700 dark:text-gray-100" />
+          </IconButton>
+        </div>
 
-    <Button
-      className="!min-w-[40px] !w-[40px] !h-[40px] !rounded-full 
-                 text-gray-700 dark:text-gray-300 
-                 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-    >
-      <IoIosNotificationsOutline size={22} />
-    </Button>
+        {/* Search box visible only on lg+ */}
+        <div className="hidden lg:block">
+          <SearchBox placeholder="Search here..." width={300} />
+        </div>
+      </div>
 
-    <div className="flex items-center gap-2">
-      <Button
-        className="!min-w-[40px] !h-[40px] !rounded-full 
-                   flex items-center justify-center 
-                   bg-gray-200 dark:bg-gray-700 
-                   text-gray-800 dark:text-gray-100 
+      {/* Right Section: Theme icons */}
+      <div className="flex items-center gap-3 text-xl">
+        <Button
+          onClick={changeTheme}
+          className="!min-w-[40px] !w-[40px] !h-[40px] !rounded-full
+                 text-gray-700 dark:text-gray-100
+                 hover:bg-gray-200 dark:hover:bg-medium transition-colors"
+        >
+          {context.theme === "dark" ? (
+            <BsSun size={22} className="text-yellow-400" />
+          ) : (
+            <BsCloudMoon size={22} className="text-blue-500" />
+          )}
+        </Button>
+
+        <Button
+          className="!min-w-[40px] !w-[40px] !h-[40px] !rounded-full
+                 text-gray-700 dark:text-gray-100
+                 hover:bg-gray-200 dark:hover:bg-medium transition-colors"
+        >
+          <IoIosNotificationsOutline size={22} />
+        </Button>
+
+        <div className="flex items-center gap-2">
+          <Button
+            className="!min-w-[40px] !h-[40px] !rounded-full
+                   flex items-center justify-center
+                   bg-gray-200 dark:bg-dark
+                   text-gray-800 dark:text-gray-100
                    transition-colors"
-      >
-        H
-      </Button>
-    </div>
-  </div>
-</header>
+          >
+            H
+          </Button>
+        </div>
+      </div>
+    </header>
+
 
   )
 }

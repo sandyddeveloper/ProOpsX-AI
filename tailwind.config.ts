@@ -25,7 +25,12 @@ const config: Config = {
       md: "768px",
       lg: "1200px",
     },
-    extend: {},
+    extend: {
+      colors: {
+        dark: 'rgb(14,0,36)',    // deep dark color for sidebar background
+        medium: 'rgb(140,69,255)' // accent color for highlights if needed
+      },
+    },
   },
   plugins: [],
 };
