@@ -36,7 +36,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       mobileOpen={mobileOpen}
       setMobileOpen={setMobileOpen}
     />
-    <div className="flex-1 overflow-y-auto p-6">
+    <div className="flex-1 ">
       <div className="p-3">
         <DashboardBoxes />
       </div>
