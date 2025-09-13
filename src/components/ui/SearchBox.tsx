@@ -12,7 +12,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   placeholder,
   value,
   onChange,
-  width = 400, // default width
+  width = 400, 
 }) => {
   return (
     <div
