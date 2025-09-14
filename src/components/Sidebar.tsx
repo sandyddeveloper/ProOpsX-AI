@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -7,7 +7,6 @@ import clsx from "clsx"
 import Logo from "@/assets/logo.png"
 import { sideBarMenu } from "@/util/data"
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
-
 
 interface SubMenuItem {
   title: string
@@ -27,58 +26,60 @@ interface SidebarProps {
   setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  collapsed,
+  setCollapsed,
+  mobileOpen,
+  setMobileOpen,
+}) => {
   const pathname = usePathname()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-
-  const handleToggle = (index: number) => {
+  const toggleSubmenu = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
 
-  const handleMobileClose = () => {
-    if (mobileOpen) setMobileOpen(false)
-  }
+  const handleMobileClose = () => setMobileOpen(false)
 
   return (
     <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+        />
+      )}
+
+      {/* Sidebar */}
       <aside
         className={clsx(
-          "fixed top-0 left-0 h-screen max-h-screen flex flex-col transition-all duration-300 ease-in-out z-40 shadow-sm border-r",
-          // Light / Dark backgrounds & borders
-          "bg-white border-gray-200 dark:bg-dark dark:border-gray-700",
-          // Desktop (lg and up)
-          "lg:translate-x-0",
+          "fixed top-0 left-0 h-screen flex flex-col transition-all duration-300 z-40 shadow-md border-r",
+          "bg-white dark:bg-dark border-gray-200 dark:border-gray-700",
           collapsed ? "lg:w-[70px]" : "lg:w-[240px]",
-          // Mobile/Tablet (<lg)
-          mobileOpen
-            ? "translate-x-0 w-[70%] sm:w-[40%]"
-            : "-translate-x-full w-[70%] sm:w-[40%]"
+          "w-[75%] sm:w-[40%]",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0"
         )}
       >
-
-
         {/* Header */}
         <div
           className={clsx(
-            "flex items-center justify-between gap-3 mb-4 px-4 py-3 border-b sticky top-0 z-10",
+            "flex items-center gap-3 px-4 py-3 border-b sticky top-0",
             "bg-white dark:bg-dark border-gray-200 dark:border-gray-700",
             collapsed && "justify-center"
           )}
         >
-
-          <div className="flex items-center gap-3">
-            <Image
-              src={Logo}
-              alt="Logo"
-              className="rounded-lg w-10 h-10 object-contain"
-            />
-            {!collapsed && (
-              <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                Pro<span className="text-purple-500">Ops</span>X
-              </h2>
-            )}
-          </div>
+          <Image
+            src={Logo}
+            alt="Logo"
+            className="rounded-lg w-10 h-10 object-contain"
+          />
+          {!collapsed && (
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              Pro<span className="text-purple-500">Ops</span>X
+            </h2>
+          )}
         </div>
 
         {/* Navigation */}
@@ -86,43 +87,46 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
           <ul className="flex flex-col gap-1 pb-6">
             {sideBarMenu.map((menu: MenuItem, index: number) => {
               const Icon = menu.icon
-              const hasSubmenu = menu?.items && menu.items.length > 0
+              const hasSubmenu = menu.items && menu.items.length > 0
               const isOpen = openIndex === index
               const isActive =
                 menu.href === pathname ||
-                menu?.items?.some((sub) => sub.href === pathname)
+                menu.items?.some((sub) => sub.href === pathname)
 
               return (
                 <li key={index} className="relative group">
+                  {/* Parent link */}
                   <Link
                     href={menu.href || "#"}
                     onClick={(e) => {
-                      if (hasSubmenu) {
+                      if (hasSubmenu && !menu.href) {
+                        // only toggle submenu
                         e.preventDefault()
-                        handleToggle(index)
+                        toggleSubmenu(index)
                       } else {
+                        // normal link
                         handleMobileClose()
                       }
                     }}
                     className={clsx(
-                      "group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                      "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition",
                       collapsed ? "justify-center" : "justify-start",
                       isActive
                         ? "bg-purple-50 dark:bg-purple-900/40 text-gray-900 dark:text-white font-semibold border-l-4 border-purple-500"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     )}
                   >
                     <Icon
                       className={clsx(
                         "shrink-0 text-[20px]",
-                        isActive ? "text-purple-600" : "text-gray-600 dark:text-gray-400"
+                        isActive ? "text-purple-600" : "text-gray-500"
                       )}
                     />
                     {!collapsed && <span>{menu.title}</span>}
                     {hasSubmenu && !collapsed && (
                       <ArrowForwardIosIcon
                         className={clsx(
-                          "ml-auto transition-transform duration-300 text-gray-400 dark:text-gray-500",
+                          "ml-auto transition-transform",
                           isOpen && "rotate-90"
                         )}
                         sx={{ fontSize: 14 }}
@@ -132,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
 
                   {/* Tooltip when collapsed */}
                   {collapsed && (
-                    <div className="absolute left-[72px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-md">
+                    <div className="absolute left-[72px] top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition shadow-md whitespace-nowrap">
                       {menu.title}
                     </div>
                   )}
@@ -141,8 +145,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
                   {hasSubmenu && !collapsed && (
                     <div
                       className={clsx(
-                        "flex flex-col pl-10 overflow-hidden transition-all duration-300 ease-in-out text-sm",
-                        isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+                        "flex flex-col pl-10 text-sm overflow-hidden transition-all duration-300",
+                        isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
                       )}
                     >
                       {menu.items?.map((item, i) => {
@@ -151,12 +155,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
                           <Link
                             key={i}
                             href={item.href}
-                            onClick={handleMobileClose}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleMobileClose()
+                              setOpenIndex(null)
+                            }}
                             className={clsx(
-                              "flex items-center gap-2 py-2 rounded-md transition-colors",
+                              "flex items-center gap-2 py-2 rounded-md",
                               isSubActive
                                 ? "text-purple-600 dark:text-purple-400 font-medium"
-                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+                                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                             )}
                           >
                             <span className="w-[4px] h-[4px] rounded-full bg-gray-400 dark:bg-gray-500"></span>
@@ -172,7 +180,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobileOpen, 
           </ul>
         </nav>
       </aside>
-
     </>
   )
 }

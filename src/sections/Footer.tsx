@@ -31,7 +31,7 @@ export const Footer = () => {
             <a href="" className="text-white/70 hover:text-white text-sm transition">
               Changelog
             </a>
-            <a href="" className="text-white/70 hover:text-white text-sm transition">
+            <a href="/dashboard" className="text-white/70 hover:text-white text-sm transition">
               dashboard
             </a>
           </nav>

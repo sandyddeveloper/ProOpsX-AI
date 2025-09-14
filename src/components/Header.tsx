@@ -6,6 +6,7 @@ import { BsCloudMoon, BsSun } from "react-icons/bs"
 import { IoIosNotificationsOutline } from "react-icons/io"
 import { ThemeContext } from "@/context/ThemeContext"
 import Cookies from "js-cookie";
+import UserLabel from "./ui/UserLabel"
 
 
 interface HeaderProps {
@@ -30,12 +31,16 @@ const Header: React.FC<HeaderProps> = ({
     Cookies.set('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
   }
+
+  const handleLogout = () => {
+    console.log("User logged out!")
+  }
   return (
-   <header
-  className="w-full sticky top-0 z-10 flex items-center justify-between py-3 px-4 shadow-sm 
+    <header
+      className="w-full sticky top-0 z-10 flex items-center justify-between py-3 px-4 shadow-sm 
              border-b-2 border-gray-300 dark:border-medium 
              bg-gray-50 dark:bg-dark transition-colors duration-300"
->
+    >
 
 
       {/* Left Section: Sidebar toggle + Search */}
@@ -92,15 +97,11 @@ const Header: React.FC<HeaderProps> = ({
         </Button>
 
         <div className="flex items-center gap-2">
-          <Button
-            className="!min-w-[40px] !h-[40px] !rounded-full
-                   flex items-center justify-center
-                   bg-gray-200 dark:bg-dark
-                   text-gray-800 dark:text-gray-100
-                   transition-colors"
-          >
-            H
-          </Button>
+          <UserLabel
+            name="Santhosh Raj"
+            email="santhosh@example.com"
+            onLogout={handleLogout}
+          />
         </div>
       </div>
     </header>
