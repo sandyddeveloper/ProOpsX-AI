@@ -12,9 +12,6 @@ export const Hero = () => {
   });
 
   const backgroundPositionY = useTransform(scrollYProgress, [0, 1], [-300, 300]);
-  // useMotionValueEvent(scrollYProgress,"change",(value)=>{
-  //   console.log("scroll progress",value);
-  // });
   return (
     <motion.section
       ref={sectionRef}

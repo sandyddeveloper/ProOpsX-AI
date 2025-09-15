@@ -34,6 +34,12 @@ export const Footer = () => {
             <a href="/dashboard" className="text-white/70 hover:text-white text-sm transition">
               dashboard
             </a>
+            <a href="/auth/signup" className="text-white/70 hover:text-white text-sm transition">
+              SignUp
+            </a>
+            <a href="/auth/signin" className="text-white/70 hover:text-white text-sm transition">
+              SignIn
+            </a>
           </nav>
 
           {/* Social Icons */}
