@@ -108,7 +108,7 @@ export default function SigninPage() {
 
           {/* Footer */}
           <p className="text-center text-sm text-gray-600 mt-6">
-            Didn't have an account?{" "}
+            Didn&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
               className="text-green-600 hover:text-green-700 font-medium"
