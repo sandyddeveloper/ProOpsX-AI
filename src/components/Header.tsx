@@ -7,6 +7,7 @@ import { IoIosNotificationsOutline } from "react-icons/io"
 import { ThemeContext } from "@/context/ThemeContext"
 import Cookies from "js-cookie";
 import UserLabel from "./ui/UserLabel"
+import Notification from "./ui/Notification"
 
 
 interface HeaderProps {
@@ -88,13 +89,7 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </Button>
 
-        <Button
-          className="!min-w-[40px] !w-[40px] !h-[40px] !rounded-full
-                 text-gray-700 dark:text-gray-100
-                 hover:bg-gray-200 dark:hover:bg-medium transition-colors"
-        >
-          <IoIosNotificationsOutline size={22} />
-        </Button>
+        <Notification />
 
         <div className="flex items-center gap-2">
           <UserLabel

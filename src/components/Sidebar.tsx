@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Navigation */}
-        <nav className="px-2 overflow-y-auto flex-1">
+        <nav className="px-2 overflow-y-auto mt-5 flex-1">
           <ul className="flex flex-col gap-1 pb-6">
             {sideBarMenu.map((menu: MenuItem, index: number) => {
               const Icon = menu.icon;
