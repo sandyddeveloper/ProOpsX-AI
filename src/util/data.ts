@@ -13,14 +13,18 @@ export const sideBarMenu = [
     icon: CreateNewFolderIcon,
     items: [
       {
-        title: "Add Product",
+        title: "Product Repository",
         href: "/project",
+      },
+      {
+        title: "Create Repository",
+        href: "/project/add",
       },
     ],
   },
   {
     title: "Account",
-    href: "/account",
+    href: "dashboard/account",
     icon: ManageAccountsIcon,
   },
 ]
