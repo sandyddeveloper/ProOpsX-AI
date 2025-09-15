@@ -16,10 +16,10 @@ const MainArea = () => {
                         Good Morning,<br />Harini
                     </h1>
                     <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-md">
-                        Here's what's happening on your team today. See the statistics at once.
+                        Here&apos;s what&apos;s happening today. See the statistics at once.
                     </p>
                     <div>
-                        <Button 
+                        <Button
                             className="!bg-black dark:!bg-gray-500 hover:!bg-gray-700 !text-white !capitalize !font-semibold !px-5 !py-2 rounded-lg flex items-center gap-2"
                         >
                             <FaPlus size={12} />
@@ -30,9 +30,9 @@ const MainArea = () => {
 
                 {/* Right Side - Illustration */}
                 <div className="w-[200px] md:w-[250px]">
-                    <img 
-                        src="https://static.vecteezy.com/system/resources/thumbnails/012/329/158/small_2x/data-analysis-graph-and-chart-in-business-dashboard-flat-illustration-purple-and-green-design-concept-vector.jpg" 
-                        alt="Dashboard illustration" 
+                    <img
+                        src="https://static.vecteezy.com/system/resources/thumbnails/012/329/158/small_2x/data-analysis-graph-and-chart-in-business-dashboard-flat-illustration-purple-and-green-design-concept-vector.jpg"
+                        alt="Dashboard illustration"
                         className="w-full h-auto"
                     />
                 </div>
