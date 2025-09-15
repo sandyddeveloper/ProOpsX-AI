@@ -1,29 +1,29 @@
-"use client"
-import React, { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import clsx from "clsx"
-import Logo from "@/assets/logo.png"
-import { sideBarMenu } from "@/util/data"
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
+"use client";
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+import Logo from "@/assets/logo.png";
+import { sideBarMenu } from "@/util/data";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 interface SubMenuItem {
-  title: string
-  href: string
+  title: string;
+  href: string;
 }
 interface MenuItem {
-  title: string
-  href?: string
-  icon: React.ElementType
-  items?: SubMenuItem[]
+  title: string;
+  href?: string;
+  icon: React.ElementType;
+  items?: SubMenuItem[];
 }
 
 interface SidebarProps {
-  collapsed: boolean
-  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>
-  mobileOpen: boolean
-  setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  mobileOpen: boolean;
+  setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -32,14 +32,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   mobileOpen,
   setMobileOpen,
 }) => {
-  const pathname = usePathname()
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const pathname = usePathname();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleSubmenu = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
-  }
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
-  const handleMobileClose = () => setMobileOpen(false)
+  const handleMobileClose = () => setMobileOpen(false);
 
   return (
     <>
@@ -86,53 +86,65 @@ const Sidebar: React.FC<SidebarProps> = ({
         <nav className="px-2 overflow-y-auto flex-1">
           <ul className="flex flex-col gap-1 pb-6">
             {sideBarMenu.map((menu: MenuItem, index: number) => {
-              const Icon = menu.icon
-              const hasSubmenu = menu.items && menu.items.length > 0
-              const isOpen = openIndex === index
+              const Icon = menu.icon;
+              const hasSubmenu = menu.items && menu.items.length > 0;
+              const isOpen = openIndex === index;
               const isActive =
                 menu.href === pathname ||
-                menu.items?.some((sub) => sub.href === pathname)
+                menu.items?.some((sub) => sub.href === pathname);
 
               return (
                 <li key={index} className="relative group">
-                  {/* Parent link */}
-                  <Link
-                    href={menu.href || "#"}
-                    onClick={(e) => {
-                      if (hasSubmenu && !menu.href) {
-                        // only toggle submenu
-                        e.preventDefault()
-                        toggleSubmenu(index)
-                      } else {
-                        // normal link
-                        handleMobileClose()
-                      }
-                    }}
-                    className={clsx(
-                      "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition",
-                      collapsed ? "justify-center" : "justify-start",
-                      isActive
-                        ? "bg-purple-50 dark:bg-purple-900/40 text-gray-900 dark:text-white font-semibold border-l-4 border-purple-500"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    )}
-                  >
-                    <Icon
+                  {/* Parent link or submenu toggle */}
+                  {menu.href ? (
+                    <Link
+                      href={menu.href}
+                      // onClick={() => handleMobileClose()}
                       className={clsx(
-                        "shrink-0 text-[20px]",
-                        isActive ? "text-purple-600" : "text-gray-500"
+                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition",
+                        collapsed ? "justify-center" : "justify-start",
+                        isActive
+                          ? "bg-purple-50 dark:bg-purple-900/40 text-gray-900 dark:text-white font-semibold border-l-4 border-purple-500"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                       )}
-                    />
-                    {!collapsed && <span>{menu.title}</span>}
-                    {hasSubmenu && !collapsed && (
-                      <ArrowForwardIosIcon
+                    >
+                      <Icon
                         className={clsx(
-                          "ml-auto transition-transform",
-                          isOpen && "rotate-90"
+                          "shrink-0 text-[20px]",
+                          isActive ? "text-purple-600" : "text-gray-500"
                         )}
-                        sx={{ fontSize: 14 }}
                       />
-                    )}
-                  </Link>
+                      {!collapsed && <span>{menu.title}</span>}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => toggleSubmenu(index)}
+                      className={clsx(
+                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium w-full text-left transition",
+                        collapsed ? "justify-center" : "justify-start",
+                        isActive
+                          ? "bg-purple-50 dark:bg-purple-900/40 text-gray-900 dark:text-white font-semibold border-l-4 border-purple-500"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      )}
+                    >
+                      <Icon
+                        className={clsx(
+                          "shrink-0 text-[20px]",
+                          isActive ? "text-purple-600" : "text-gray-500"
+                        )}
+                      />
+                      {!collapsed && <span>{menu.title}</span>}
+                      {!collapsed && hasSubmenu && (
+                        <ArrowForwardIosIcon
+                          className={clsx(
+                            "ml-auto transition-transform",
+                            isOpen && "rotate-90"
+                          )}
+                          sx={{ fontSize: 14 }}
+                        />
+                      )}
+                    </button>
+                  )}
 
                   {/* Tooltip when collapsed */}
                   {collapsed && (
@@ -150,15 +162,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                       )}
                     >
                       {menu.items?.map((item, i) => {
-                        const isSubActive = item.href === pathname
+                        const isSubActive = item.href === pathname;
                         return (
                           <Link
                             key={i}
                             href={item.href}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleMobileClose()
-                              setOpenIndex(null)
+                            onClick={() => {
+                              // handleMobileClose();
+                              setOpenIndex(null);
                             }}
                             className={clsx(
                               "flex items-center gap-2 py-2 rounded-md",
@@ -170,18 +181,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                             <span className="w-[4px] h-[4px] rounded-full bg-gray-400 dark:bg-gray-500"></span>
                             {item.title}
                           </Link>
-                        )
+                        );
                       })}
                     </div>
                   )}
                 </li>
-              )
+              );
             })}
           </ul>
         </nav>
       </aside>
     </>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

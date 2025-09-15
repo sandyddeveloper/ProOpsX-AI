@@ -69,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Search box visible only on lg+ */}
         <div className="hidden lg:block">
-          <SearchBox placeholder="Search here..." width={300} />
+          <SearchBox placeholder="Search here..." width={300} suggestions={["a", "b", "c"]}/>
         </div>
       </div>
 

@@ -14,17 +14,17 @@ export const sideBarMenu = [
     items: [
       {
         title: "Product Repository",
-        href: "/project",
+        href: "/dashboard/project",
       },
       {
         title: "Create Repository",
-        href: "/project/add",
+        href: "/dashboard/project/add",
       },
     ],
   },
   {
     title: "Account",
-    href: "dashboard/account",
+    href: "/dashboard/account",
     icon: ManageAccountsIcon,
   },
 ]
