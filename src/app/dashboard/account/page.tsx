@@ -1,9 +1,12 @@
 import React from 'react'
+import AccountSettings from './settingsPage/page'
 
-const AccountSection = () => {
+const AccountSettingsPage = () => {
   return (
-    <div>AccountSection</div>
+    <div>
+        <AccountSettings role="developer" />
+    </div>
   )
 }
 
-export default AccountSection
+export default AccountSettingsPage

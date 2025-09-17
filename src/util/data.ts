@@ -1,6 +1,7 @@
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder"
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts"
+import ChatIcon from '@mui/icons-material/Chat';
 
 export const sideBarMenu = [
   {
@@ -23,8 +24,14 @@ export const sideBarMenu = [
     ],
   },
   {
+    title: "Chat",
+    href: "/dashboard/chat",
+    icon: ChatIcon,
+  },
+  {
     title: "Account",
     href: "/dashboard/account",
     icon: ManageAccountsIcon,
   },
+  
 ]

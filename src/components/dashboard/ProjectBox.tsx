@@ -127,17 +127,15 @@ export default function ProjectsBox() {
         <div className="flex gap-2">
           <button
             onClick={() => setView("grid")}
-            className={`p-2 rounded-lg border ${
-              view === "grid" ? "bg-gray-200" : "bg-white"
-            }`}
+            className={`p-2 rounded-lg border ${view === "grid" ? "bg-gray-200" : "bg-white"
+              }`}
           >
             <Grid className="h-4 w-4 text-black" />
           </button>
           <button
             onClick={() => setView("list")}
-            className={`p-2 rounded-lg border ${
-              view === "list" ? "bg-gray-200" : "bg-white"
-            }`}
+            className={`p-2 rounded-lg border ${view === "list" ? "bg-gray-200" : "bg-white"
+              }`}
           >
             <List className="h-4 w-4 text-black" />
           </button>
@@ -154,9 +152,8 @@ export default function ProjectsBox() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-black border-r shadow-lg z-50 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-black border-r shadow-lg z-50 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-lg font-bold flex items-center gap-2 text-black dark:text-white">
@@ -240,7 +237,7 @@ export default function ProjectsBox() {
               key={project.id}
               className="rounded-2xl border shadow-md hover:shadow-lg transition p-4"
             >
-              <Link href={`/projects/${project.id}`}>
+              <Link href={`/dashboard/project/${project.id}`}>
                 <h3 className="text-lg font-bold mb-2 text-black dark:text-white  hover:underline">
                   {project.title}
                 </h3>
