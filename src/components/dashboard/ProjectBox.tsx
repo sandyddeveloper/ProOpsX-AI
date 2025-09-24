@@ -152,70 +152,94 @@ export default function ProjectsBox() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white dark:bg-black border-r shadow-lg z-50 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 h-full w-80 bg-white dark:bg-dark border-r shadow-xl z-50 transform transition-transform duration-300 ease-in-out 
+  ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-bold flex items-center gap-2 text-black dark:text-white">
-            <SlidersHorizontal className="h-4 w-4 text-black dark:text-white" /> Filters
+        {/* Header */}
+        <div className="flex justify-between items-center px-5 py-4 border-b bg-gray-50 dark:bg-dark/80">
+          <h2 className="text-xl font-semibold flex items-center gap-2 text-black dark:text-white">
+            <SlidersHorizontal className="h-5 w-5 text-primary" /> Filters
           </h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="p-2 rounded-full hover:bg-gray-200 "
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
-            <X className="h-5 w-5 text-black dark:text-white hover:text-black" />
+            <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
 
-        <div className="p-4 flex flex-col gap-4 overflow-y-auto h-[calc(100%-60px)]">
-          <input
-            type="text"
-            placeholder="Search projects..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full text-black"
-          />
+        {/* Body */}
+        <div className="p-5 flex flex-col gap-5 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
+          {/* Search */}
+          <div>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Search</label>
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border rounded-lg px-4 py-2 w-full mt-1 text-black dark:text-white dark:bg-dark/60 focus:ring-2 focus:ring-primary focus:outline-none"
+            />
+          </div>
 
-          <CustomSelect
-            value={tagFilter}
-            onChange={setTagFilter}
-            options={[
-              { value: "", label: "All Tags" },
-              ...allTags.map((tag) => ({ value: tag, label: tag })),
-            ]}
-          />
+          {/* Tag Filter */}
+          <div>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Tags</label>
+            <CustomSelect
+              value={tagFilter}
+              onChange={setTagFilter}
+              options={[
+                { value: "", label: "All Tags" },
+                ...allTags.map((tag) => ({ value: tag, label: tag })),
+              ]}
+            />
+          </div>
 
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full text-black"
-          />
+          {/* Date Range */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 w-full mt-1 text-black dark:text-white dark:bg-dark/60 focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 w-full mt-1 text-black dark:text-white dark:bg-dark/60 focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+          </div>
 
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 w-full text-black"
-          />
+          {/* Sort Order */}
+          <div>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Sort By</label>
+            <CustomSelect
+              value={sortOrder}
+              onChange={setSortOrder}
+              options={[
+                { value: "newest", label: "Newest First" },
+                { value: "oldest", label: "Oldest First" },
+              ]}
+            />
+          </div>
 
-          <CustomSelect
-            value={sortOrder}
-            onChange={setSortOrder}
-            options={[
-              { value: "newest", label: "Newest First" },
-              { value: "oldest", label: "Oldest First" },
-            ]}
-          />
-
+          {/* Clear Button */}
           <button
             onClick={clearFilters}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-md transition transform hover:scale-105"
           >
             Clear Filters
           </button>
         </div>
       </div>
+
 
       {/* Projects */}
       {filteredProjects.length === 0 ? (
