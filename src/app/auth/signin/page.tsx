@@ -1,119 +1,118 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import AuthLayout from "../AuthLayout";
 
 export default function SigninPage() {
-  const [role, setRole] = useState("developer");
   const [form, setForm] = useState({
     username: "",
-    email: "",
     password: "",
-    confirmPassword: "",
-    companyPhone: "",
-    companyEmail: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: files ? files[0] : value,
+      [name]: value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", { role, ...form });
+    setLoading(true);
+    setMessage("");
+
+    try {
+      // Call your Spring Boot login API
+      const response = await axios.post("http://localhost:8080/api/auth/signin", {
+        username: form.username,
+        password: form.password,
+      });
+
+      const { token, username, roles } = response.data;
+
+      // Optional: store in localStorage for client-side usage
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+      localStorage.setItem("roles", JSON.stringify(roles));
+
+      // Save JWT in a secure cookie via Next.js API route
+      await fetch("/api/auth/set-cookies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+        credentials: "include", // IMPORTANT
+      });
+
+
+      setMessage("Login successful ✅ Redirecting...");
+
+      // Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        setMessage(error.response.data.message || "Invalid credentials!");
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthLayout>
       <div className="min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8">
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-8">Signup</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">Sign In</h2>
 
-        {/* Role Toggle */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {["admin", "developer", "hr", "company"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRole(r)}
-              className={`px-5 py-2 rounded-lg text-sm font-medium transition ${role === r
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-black hover:bg-gray-300"
-                }`}
-            >
-              {r.charAt(0).toUpperCase() + r.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-lg mx-auto space-y-6"
-        >
-          {/* Email */}
+        <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto space-y-6">
           <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={form.username}
             onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 text-black placeholder-black"
+            required
+            className="w-full border rounded-lg px-4 py-3 text-black placeholder-black focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
 
-          {/* Password */}
           <input
             type="password"
             name="password"
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 text-black placeholder-black"
+            required
+            className="w-full border rounded-lg px-4 py-3 text-black placeholder-black focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
 
-          {/* Company Fields */}
-          {role === "company" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <input
-                type="text"
-                name="companyPhone"
-                placeholder="Phone Number"
-                value={form.companyPhone}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-3 text-black placeholder-black"
-              />
-              <input
-                type="email"
-                name="companyEmail"
-                placeholder="Company Email"
-                value={form.companyEmail}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-3 text-black placeholder-black"
-              />
-            </div>
-          )}
-
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-purple-950 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold"
+            disabled={loading}
+            className="w-full bg-purple-950 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold disabled:opacity-50"
           >
-            Signup as {role.charAt(0).toUpperCase() + role.slice(1)}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
 
-          {/* Footer */}
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Didn&apos;t have an account?{" "}
-            <Link
-              href="/auth/signup"
-              className="text-green-600 hover:text-green-700 font-medium"
+          {message && (
+            <p
+              className={`text-center text-sm mt-4 ${message.includes("successful") ? "text-green-600" : "text-red-600"
+                }`}
             >
-              Sign in
+              {message}
+            </p>
+          )}
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
+              Signup
             </Link>
           </p>
         </form>

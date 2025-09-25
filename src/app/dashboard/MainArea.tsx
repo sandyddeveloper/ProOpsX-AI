@@ -2,10 +2,41 @@
 
 import DashboardBoxes from '@/components/dashboard/DashboardBoxes';
 import { Button } from '@mui/material';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
+interface User {
+    username: string;
+    email: string;
+}
+
 const MainArea = () => {
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) return;
+
+                const response = await axios.get("http://localhost:8080/api/auth/user", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                });
+
+                setUser({
+                    username: response.data.username,
+                    email: response.data.email,
+                });
+            } catch (error) {
+                console.error("Failed to fetch user info", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
     return (
         <div className="w-full h-full space-y-6">
             {/* Greeting Section */}
@@ -13,7 +44,7 @@ const MainArea = () => {
                 {/* Left Side */}
                 <div className="flex flex-col gap-4 text-center md:text-left">
                     <h1 className="text-3xl md:text-4xl font-bold leading-tight text-gray-900 dark:text-gray-100">
-                        Good Morning,<br />Harini
+                        Good Morning,<br />{user ? user.username : "Loading..."}
                     </h1>
                     <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-md">
                         Here&apos;s what&apos;s happening today. See the statistics at once.
