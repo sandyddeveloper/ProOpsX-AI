@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import SearchBox from "./ui/SearchBox";
 import { Button, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -9,18 +9,13 @@ import Cookies from "js-cookie";
 import UserLabel from "./ui/UserLabel";
 import Notification from "./ui/Notification";
 import axios from "axios";
+import { useUser } from "@/hooks/useUser";
 
 interface HeaderProps {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   mobileOpen: boolean;
   setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface User {
-  username: string;
-  email: string;
-  role?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -30,9 +25,11 @@ const Header: React.FC<HeaderProps> = ({
   setMobileOpen,
 }) => {
   const context = useContext(ThemeContext);
-  const [user, setUser] = useState<User | null>(null);
 
-  // Toggle theme
+
+  const { user, loading, error } = useUser(true);
+
+
   const changeTheme = () => {
     const newTheme = context.theme === "dark" ? "light" : "dark";
     context.setTheme(newTheme);
@@ -40,51 +37,13 @@ const Header: React.FC<HeaderProps> = ({
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  const formatRole = (role: string) => {
-  // Remove "ROLE_" prefix and capitalize first letter
-  if (!role) return "";
-  const cleanRole = role.replace("ROLE_", "");
-  return cleanRole.charAt(0).toUpperCase() + cleanRole.slice(1).toLowerCase();
-};
-
-
-
-useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/api/auth/user",
-        { withCredentials: true }
-      );
-
-      const role = response.data.roles[0]?.authority || "";
-
-      setUser({
-        username: response.data.username,
-        email: response.data.email,
-        role: formatRole(role), // ✅ format nicely
-      });
-    } catch (error) {
-      console.error("Failed to fetch user info", error);
-    }
-  };
-
-  fetchUser();
-}, []);
-
-
-
-
   const handleLogout = async () => {
     try {
-      // Call backend to clear JWT cookie
       await axios.post(
-        "http://localhost:8080/api/auth/signout", // ✅ make sure this matches backend
+        "http://localhost:8080/api/auth/signout",
         {},
         { withCredentials: true }
       );
-
-      // Redirect to login page
       window.location.href = "/auth/signin";
     } catch (error) {
       console.error("Logout failed:", error);
@@ -153,15 +112,18 @@ useEffect(() => {
 
         {/* User info */}
         <div className="flex items-center gap-2">
-          {user ? (
+          {loading ? (
+            <span className="text-sm text-gray-500">Loading...</span>
+          ) : error ? (
+            <span className="text-sm text-red-500">{error}</span>
+          ) : user ? (
             <UserLabel
-              name={`${user.username} - ${user.role} `}
-              email={`${user.email}`}
+              name={`${user.username} - ${user.role?.toUpperCase()}`}
+              email={user.email}
               onLogout={handleLogout}
             />
-
           ) : (
-            <span className="text-sm text-gray-500">Loading...</span>
+            <span className="text-sm text-gray-500">No user</span>
           )}
         </div>
       </div>

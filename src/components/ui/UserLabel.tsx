@@ -29,8 +29,6 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
   }, [])
 
 
-  
-
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button
@@ -42,9 +40,8 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
       >
         {name ? name.charAt(0).toUpperCase() : "?"}
         <span
-          className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${
-            status === "active" ? "bg-green-500" : "bg-red-500"
-          }`}
+          className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${status === "active" ? "bg-green-500" : "bg-red-500"
+            }`}
         />
       </Menu.Button>
 
@@ -80,21 +77,19 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
             <div className="space-y-1">
               <button
                 onClick={() => setStatus("active")}
-                className={`flex items-center w-full px-3 py-2 rounded-lg transition text-gray-700 dark:text-gray-100 ${
-                  status === "active"
+                className={`flex items-center w-full px-3 py-2 rounded-lg transition text-gray-700 dark:text-gray-100 ${status === "active"
                     ? "bg-gray-100 dark:bg-gray-800"
                     : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
+                  }`}
               >
                 <MdCircle className="text-green-500 mr-2" /> Active
               </button>
               <button
                 onClick={() => setStatus("dnd")}
-                className={`flex items-center w-full px-3 py-2 rounded-lg transition text-gray-700 dark:text-gray-100 ${
-                  status === "dnd"
+                className={`flex items-center w-full px-3 py-2 rounded-lg transition text-gray-700 dark:text-gray-100 ${status === "dnd"
                     ? "bg-gray-100 dark:bg-gray-800"
                     : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
+                  }`}
               >
                 <MdCircle className="text-red-500 mr-2" /> Do Not Disturb
               </button>
@@ -105,9 +100,8 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-100 ${
-                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                  }`}
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-100 ${active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                    }`}
                 >
                   <FaUser className="mr-2 text-gray-500 dark:text-gray-400" /> Profile
                 </button>
@@ -116,9 +110,8 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-100 ${
-                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                  }`}
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-100 ${active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                    }`}
                 >
                   <FaCog className="mr-2 text-gray-500 dark:text-gray-400" /> Settings
                 </button>
@@ -134,11 +127,10 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
                     onLogout()
                     setOpen(false)
                   }}
-                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-red-600 ${
-                    active
+                  className={`flex items-center w-full px-3 py-2 rounded-lg text-sm text-red-600 ${active
                       ? "bg-red-100 dark:bg-red-800"
                       : "hover:bg-red-50 dark:hover:bg-red-800/50"
-                  }`}
+                    }`}
                 >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>

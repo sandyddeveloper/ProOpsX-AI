@@ -10,15 +10,14 @@ export async function POST(req: Request) {
 
     const response = NextResponse.json({ message: "Cookie set successfully" });
 
-    // Set the cookie
     response.cookies.set({
       name: "token",
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      path: "/", // important so cookie is available everywhere
-      maxAge: 60 * 60 * 24, // 1 day
+      path: "/", 
+      maxAge: 60 * 60 * 24,
     });
 
     return response;

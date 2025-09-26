@@ -1,42 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
-import axios from "axios";
 import AuthLayout from "../AuthLayout";
+import useAuthForm from "@/hooks/useAuthForm";
+import { ToastContainer } from "react-toastify";
+import { showToast, ToastType } from "@/util/toast";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+
 
 export default function SigninPage() {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const { form, handleChange, handleSubmit, loading, message } = useAuthForm({
+    url: "http://localhost:8080/api/auth/signin",
+    onSuccessRedirect: "/dashboard",
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+useEffect(() => {
+  if (message) {
+    const isSuccess = message.toLowerCase().includes("success");
+    const type: ToastType = isSuccess ? "success" : "error";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      // Request with credentials so HttpOnly cookie is set
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/signin",
-        { username: form.username, password: form.password },
-        { withCredentials: true } // ✅ critical
-      );
-
-      setMessage("Login successful ✅ Redirecting...");
-      setTimeout(() => window.location.href = "/dashboard", 1000);
-    } catch (error: any) {
-      setMessage(error.response?.data?.message || "Invalid credentials!");
-    } finally {
-      setLoading(false);
-    }
-  };
+    showToast(message, type, {
+      icon: isSuccess
+        ? <FaCheckCircle className="text-green-500" />
+        : <FaTimesCircle className="text-red-500" />,
+    });
+  }
+}, [message]);
 
   return (
     <AuthLayout>
+      <ToastContainer position="top-right" />
       <div className="min-h-screen flex flex-col justify-center px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-8">Sign In</h2>
         <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto space-y-6">
@@ -44,7 +37,7 @@ export default function SigninPage() {
             type="text"
             name="username"
             placeholder="Username"
-            value={form.username}
+            value={form.username || ""}
             onChange={handleChange}
             required
             className="w-full border rounded-lg px-4 py-3 text-black placeholder-black focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -53,7 +46,7 @@ export default function SigninPage() {
             type="password"
             name="password"
             placeholder="Password"
-            value={form.password}
+            value={form.password || ""}
             onChange={handleChange}
             required
             className="w-full border rounded-lg px-4 py-3 text-black placeholder-black focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -65,13 +58,6 @@ export default function SigninPage() {
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
-
-          {message && (
-            <p className={`text-center text-sm mt-4 ${message.includes("successful") ? "text-green-600" : "text-red-600"}`}>
-              {message}
-            </p>
-          )}
-
           <p className="text-center text-sm text-gray-600 mt-6">
             Don't have an account?{" "}
             <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
