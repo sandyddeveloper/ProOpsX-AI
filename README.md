@@ -1,4 +1,4 @@
-# ProOpx App
+# Employee & Development Management App
 
 A comprehensive web application designed to streamline **project management**, **bug tracking**, **employee productivity**, and **HR operations**, making work easier for both the development team and the company.
 
@@ -16,7 +16,7 @@ A comprehensive web application designed to streamline **project management**, *
 
 ## Overview
 
-This application helps companies manage employees, projects, bugs, and HR operations in a centralized platform. It ensures that **developers, HR, and managers** can track tasks, communicate, and document work efficiently.
+This application helps companies manage employees, projects, bugs, and HR operations in a centralized platform. It ensures that **developers, HR, team leads, and managers** can track tasks, communicate, and document work efficiently.
 
 ---
 
@@ -25,6 +25,7 @@ This application helps companies manage employees, projects, bugs, and HR operat
 | Role       | Description                                                  |
 |-----------|--------------------------------------------------------------|
 | **Admin** | Full access: manage projects, tasks, employees, HR, bug tracking, analytics |
+| **Team Lead** | Oversee a team of developers, track task progress, manage team-level bugs and reports |
 | **Developer** | View assigned projects/tasks, update progress, submit logs, report bugs, communicate |
 | **HR** | Manage employee profiles, attendance, leave, payroll, notifications |
 | **Tester / QA / Reporter** | Report bugs, track bug status, add comments, collaborate on issues |
@@ -49,25 +50,25 @@ This application helps companies manage employees, projects, bugs, and HR operat
 
 ## Role-to-Feature Mapping
 
-| Feature / Module                   | Admin | Developer | HR | Tester/QA | Project Owner/Client |
-|-----------------------------------|:-----:|:---------:|:--:|:---------:|:------------------:|
-| Dashboard Overview                 | ✅    | ✅        | ✅  | ✅        | ✅                  |
-| Create/Manage Projects             | ✅    | ❌        | ❌  | ❌        | ❌                  |
-| Assign Tasks / Bugs                | ✅    | ❌        | ❌  | ❌        | ❌                  |
-| View Assigned Tasks/Projects       | ✅    | ✅        | ❌  | ✅        | ✅                  |
-| Update Task Progress / Logs        | ✅    | ✅        | ❌  | ❌        | ❌                  |
-| Report Bugs                        | ✅    | ✅        | ❌  | ✅        | ❌                  |
-| Bug Status Tracking / Updates      | ✅    | ✅        | ❌  | ✅        | ✅                  |
-| Comment / Chat System              | ✅    | ✅        | ✅  | ✅        | ❌                  |
-| Time Tracking / Work Logs          | ✅    | ✅        | ✅  | ❌        | ❌                  |
-| Notifications / Alerts             | ✅    | ✅        | ✅  | ✅        | ✅                  |
-| Document / File Management         | ✅    | ✅        | ✅  | ✅        | ❌                  |
-| Task/Bug Reports & Analytics       | ✅    | ✅        | ✅  | ✅        | ✅                  |
-| Employee Management (HR)           | ✅    | ❌        | ✅  | ❌        | ❌                  |
-| Attendance & Leave Management      | ✅    | ❌        | ✅  | ❌        | ❌                  |
-| Payroll Management                 | ✅    | ❌        | ✅  | ❌        | ❌                  |
-| Role & Permission Management       | ✅    | ❌        | ❌  | ❌        | ❌                  |
-| Project Feedback / Requests        | ✅    | ❌        | ❌  | ❌        | ✅                  |
+| Feature / Module                   | Admin | Team Lead | Developer | HR | Tester/QA | Project Owner/Client |
+|-----------------------------------|:-----:|:---------:|:---------:|:--:|:---------:|:------------------:|
+| Dashboard Overview                 | ✅    | ✅        | ✅        | ✅  | ✅        | ✅                  |
+| Create/Manage Projects             | ✅    | ✅ (team-level) | ❌        | ❌  | ❌        | ❌                  |
+| Assign Tasks / Bugs                | ✅    | ✅ (team-level) | ❌        | ❌  | ❌        | ❌                  |
+| View Assigned Tasks/Projects       | ✅    | ✅        | ✅        | ❌  | ✅        | ✅                  |
+| Update Task Progress / Logs        | ✅    | ✅        | ✅        | ❌  | ❌        | ❌                  |
+| Report Bugs                        | ✅    | ✅        | ✅        | ❌  | ✅        | ❌                  |
+| Bug Status Tracking / Updates      | ✅    | ✅        | ✅        | ❌  | ✅        | ✅                  |
+| Comment / Chat System              | ✅    | ✅        | ✅        | ✅  | ✅        | ❌                  |
+| Time Tracking / Work Logs          | ✅    | ✅        | ✅        | ✅  | ❌        | ❌                  |
+| Notifications / Alerts             | ✅    | ✅        | ✅        | ✅  | ✅        | ✅                  |
+| Document / File Management         | ✅    | ✅        | ✅        | ✅  | ✅        | ❌                  |
+| Task/Bug Reports & Analytics       | ✅    | ✅ (team-level) | ✅        | ✅  | ✅        | ✅                  |
+| Employee Management (HR)           | ✅    | ❌        | ❌        | ✅  | ❌        | ❌                  |
+| Attendance & Leave Management      | ✅    | ❌        | ❌        | ✅  | ❌        | ❌                  |
+| Payroll Management                 | ✅    | ❌        | ❌        | ✅  | ❌        | ❌                  |
+| Role & Permission Management       | ✅    | ❌        | ❌        | ❌  | ❌        | ❌                  |
+| Project Feedback / Requests        | ✅    | ✅        | ❌        | ❌  | ❌        | ✅                  |
 
 ---
 
@@ -82,7 +83,4 @@ This application helps companies manage employees, projects, bugs, and HR operat
 
 ## Conclusion
 
-This application provides a **centralized platform** for developers, HR, and managers to **track, collaborate, and optimize workflow**, making the development process easier, more transparent, and efficient for the company.
-
-
-
+This application provides a **centralized platform** for developers, team leads, HR, and managers to **track, collaborate, and optimize workflow**, making the development process easier, more transparent, and efficient for the company.
