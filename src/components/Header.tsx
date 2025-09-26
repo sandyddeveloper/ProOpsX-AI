@@ -20,6 +20,7 @@ interface HeaderProps {
 interface User {
   username: string;
   email: string;
+  role?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -29,7 +30,6 @@ const Header: React.FC<HeaderProps> = ({
   setMobileOpen,
 }) => {
   const context = useContext(ThemeContext);
-
   const [user, setUser] = useState<User | null>(null);
 
   // Toggle theme
@@ -40,36 +40,56 @@ const Header: React.FC<HeaderProps> = ({
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  // Fetch user info from Spring Boot
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  const formatRole = (role: string) => {
+  // Remove "ROLE_" prefix and capitalize first letter
+  if (!role) return "";
+  const cleanRole = role.replace("ROLE_", "");
+  return cleanRole.charAt(0).toUpperCase() + cleanRole.slice(1).toLowerCase();
+};
 
-        const response = await axios.get("http://localhost:8080/api/auth/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true, 
-        });
 
-        setUser({
-          username: response.data.username,
-          email: response.data.email,
-        });
-      } catch (error) {
-        console.error("Failed to fetch user info", error);
-      }
-    };
 
-    fetchUser();
-  }, []);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/auth/user",
+        { withCredentials: true }
+      );
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    Cookies.remove("token");
-    window.location.href = "/auth/signin";
+      const role = response.data.roles[0]?.authority || "";
+
+      setUser({
+        username: response.data.username,
+        email: response.data.email,
+        role: formatRole(role), // ✅ format nicely
+      });
+    } catch (error) {
+      console.error("Failed to fetch user info", error);
+    }
+  };
+
+  fetchUser();
+}, []);
+
+
+
+
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear JWT cookie
+      await axios.post(
+        "http://localhost:8080/api/auth/signout", // ✅ make sure this matches backend
+        {},
+        { withCredentials: true }
+      );
+
+      // Redirect to login page
+      window.location.href = "/auth/signin";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.href = "/auth/signin";
+    }
   };
 
   return (
@@ -135,10 +155,11 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2">
           {user ? (
             <UserLabel
-              name={user.username}
-              email={user.email}
+              name={`${user.username} - ${user.role} `}
+              email={`${user.email}`}
               onLogout={handleLogout}
             />
+
           ) : (
             <span className="text-sm text-gray-500">Loading...</span>
           )}

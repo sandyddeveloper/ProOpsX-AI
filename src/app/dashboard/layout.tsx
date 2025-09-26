@@ -10,7 +10,7 @@ export default function DashboardLayout({
 }) {
   // Get JWT token from cookies
   const cookieStore = cookies();
-  const token = cookieStore.get("token")?.value;
+  const token = cookieStore.get("jwt")?.value;
 
   // Redirect if not authenticated
   if (!token) {

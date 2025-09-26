@@ -12,7 +12,6 @@ interface UserDropdownProps {
 
 const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
   const [status, setStatus] = useState<"active" | "dnd">("active")
-  const [darkMode, setDarkMode] = useState(false)
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -29,6 +28,9 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
     return () => window.removeEventListener("keydown", handleKeydown)
   }, [])
 
+
+  
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button
@@ -38,7 +40,7 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
                    bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-semibold 
                    hover:scale-105 transition-transform focus:outline-none shadow-md"
       >
-        {name.charAt(0).toUpperCase()}
+        {name ? name.charAt(0).toUpperCase() : "?"}
         <span
           className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${
             status === "active" ? "bg-green-500" : "bg-red-500"
@@ -65,7 +67,7 @@ const UserLabel: React.FC<UserDropdownProps> = ({ name, email, onLogout }) => {
           <div className="px-5 py-4 flex items-center gap-3 bg-gray-50 dark:bg-gray-800">
             <div className="w-10 h-10 flex items-center justify-center rounded-full 
                             bg-gradient-to-br from-purple-600 to-indigo-600 text-white font-bold">
-              {name.charAt(0).toUpperCase()}
+              {name ? name.charAt(0).toUpperCase() : "?"}
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{name}</p>

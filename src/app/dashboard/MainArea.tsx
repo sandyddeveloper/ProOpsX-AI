@@ -16,15 +16,11 @@ const MainArea = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const token = localStorage.getItem("token");
-                if (!token) return;
-
-                const response = await axios.get("http://localhost:8080/api/auth/user", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    withCredentials: true,
-                });
+                const response = await axios.get(
+                    "http://localhost:8080/api/auth/user",
+                    { withCredentials: true }
+                );
+                console.log("User API Response:", response.data);
 
                 setUser({
                     username: response.data.username,

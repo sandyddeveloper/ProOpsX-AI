@@ -5,7 +5,7 @@ import { Hero } from "@/sections/Hero";
 
 export default function AuthLayout({
     children,
-    imageSrc = "/auth-bg.jpg", // default image
+    
 }: {
     children: React.ReactNode;
     imageSrc?: string;
