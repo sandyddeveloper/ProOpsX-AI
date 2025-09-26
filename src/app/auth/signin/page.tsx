@@ -14,18 +14,18 @@ export default function SigninPage() {
     onSuccessRedirect: "/dashboard",
   });
 
-useEffect(() => {
-  if (message) {
-    const isSuccess = message.toLowerCase().includes("success");
-    const type: ToastType = isSuccess ? "success" : "error";
+  useEffect(() => {
+    if (message) {
+      const isSuccess = message.toLowerCase().includes("success");
+      const type: ToastType = isSuccess ? "success" : "error";
 
-    showToast(message, type, {
-      icon: isSuccess
-        ? <FaCheckCircle className="text-green-500" />
-        : <FaTimesCircle className="text-red-500" />,
-    });
-  }
-}, [message]);
+      showToast(message, type, {
+        icon: isSuccess
+          ? <FaCheckCircle className="text-green-500" />
+          : <FaTimesCircle className="text-red-500" />,
+      });
+    }
+  }, [message]);
 
   return (
     <AuthLayout>
@@ -59,7 +59,7 @@ useEffect(() => {
             {loading ? "Signing in..." : "Sign In"}
           </button>
           <p className="text-center text-sm text-gray-600 mt-6">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/auth/signup" className="text-green-600 hover:text-green-700 font-medium">
               Signup
             </Link>
