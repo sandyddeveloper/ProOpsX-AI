@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ProOpx App
 
-## Getting Started
+A comprehensive web application designed to streamline **project management**, **bug tracking**, **employee productivity**, and **HR operations**, making work easier for both the development team and the company.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Table of Contents
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Overview](#overview)
+- [Roles & Permissions](#roles--permissions)
+- [Features](#features)
+- [Role-to-Feature Mapping](#role-to-feature-mapping)
+- [Optional Enhancements](#optional-enhancements)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Overview
 
-## Learn More
+This application helps companies manage employees, projects, bugs, and HR operations in a centralized platform. It ensures that **developers, HR, and managers** can track tasks, communicate, and document work efficiently.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Roles & Permissions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+| Role       | Description                                                  |
+|-----------|--------------------------------------------------------------|
+| **Admin** | Full access: manage projects, tasks, employees, HR, bug tracking, analytics |
+| **Developer** | View assigned projects/tasks, update progress, submit logs, report bugs, communicate |
+| **HR** | Manage employee profiles, attendance, leave, payroll, notifications |
+| **Tester / QA / Reporter** | Report bugs, track bug status, add comments, collaborate on issues |
+| **Project Owner / Client (Optional)** | View project progress, submit feedback, request features |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **Dashboard:** Overview of tasks, bugs, notifications, and deadlines  
+- **Project & Task Management:** Assign/manage tasks/projects, sub-tasks, attachments  
+- **Bug Tracking:** Report, assign, resolve bugs, comment system  
+- **Communication & Collaboration:** Chat system, mentions, file sharing  
+- **Time & Productivity Tracking:** Track hours worked, automatic logs, reports  
+- **Notifications & Alerts:** Email & in-app notifications for tasks and HR updates  
+- **Document & File Management:** Upload and version control project files  
+- **Reports & Analytics:** Task completion, bug resolution, productivity insights  
+- **HR-Specific Features:** Employee profiles, attendance, leave management, payroll  
+- **Admin-Specific Features:** Project/task creation, role assignment, team oversight  
+
+---
+
+## Role-to-Feature Mapping
+
+| Feature / Module                   | Admin | Developer | HR | Tester/QA | Project Owner/Client |
+|-----------------------------------|:-----:|:---------:|:--:|:---------:|:------------------:|
+| Dashboard Overview                 | ✅    | ✅        | ✅  | ✅        | ✅                  |
+| Create/Manage Projects             | ✅    | ❌        | ❌  | ❌        | ❌                  |
+| Assign Tasks / Bugs                | ✅    | ❌        | ❌  | ❌        | ❌                  |
+| View Assigned Tasks/Projects       | ✅    | ✅        | ❌  | ✅        | ✅                  |
+| Update Task Progress / Logs        | ✅    | ✅        | ❌  | ❌        | ❌                  |
+| Report Bugs                        | ✅    | ✅        | ❌  | ✅        | ❌                  |
+| Bug Status Tracking / Updates      | ✅    | ✅        | ❌  | ✅        | ✅                  |
+| Comment / Chat System              | ✅    | ✅        | ✅  | ✅        | ❌                  |
+| Time Tracking / Work Logs          | ✅    | ✅        | ✅  | ❌        | ❌                  |
+| Notifications / Alerts             | ✅    | ✅        | ✅  | ✅        | ✅                  |
+| Document / File Management         | ✅    | ✅        | ✅  | ✅        | ❌                  |
+| Task/Bug Reports & Analytics       | ✅    | ✅        | ✅  | ✅        | ✅                  |
+| Employee Management (HR)           | ✅    | ❌        | ✅  | ❌        | ❌                  |
+| Attendance & Leave Management      | ✅    | ❌        | ✅  | ❌        | ❌                  |
+| Payroll Management                 | ✅    | ❌        | ✅  | ❌        | ❌                  |
+| Role & Permission Management       | ✅    | ❌        | ❌  | ❌        | ❌                  |
+| Project Feedback / Requests        | ✅    | ❌        | ❌  | ❌        | ✅                  |
+
+---
+
+## Optional Enhancements
+- Mobile-friendly interface for on-the-go updates  
+- Integration with Git or CI/CD for commit tracking  
+- Calendar view for deadlines, meetings, and schedules  
+- Search & filter across projects, tasks, or employees  
+- Role-based access control for enhanced security  
+
+---
+
+## Conclusion
+
+This application provides a **centralized platform** for developers, HR, and managers to **track, collaborate, and optimize workflow**, making the development process easier, more transparent, and efficient for the company.
+
+
+
