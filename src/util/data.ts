@@ -3,6 +3,9 @@ import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder"
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts"
 import ChatIcon from '@mui/icons-material/Chat';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
+import { Tag } from "lucide-react";
+
+
 
 export const sideBarMenu = [
   {
@@ -22,6 +25,24 @@ export const sideBarMenu = [
         title: "Create Repository",
         href: "/dashboard/project/add",
       },
+      {
+        title: "Manage Repository",
+        href: "/dashboard/project/manage",
+      },
+    ],
+  },
+  {
+    title: "Forms",
+    icon: Tag,
+    items: [
+      {
+        title: "Tags",
+        href: "/dashboard/forms/tags/manage",
+      },
+      {
+        title: "Category",
+        href: "/dashboard/forms/category/manage",
+      },
     ],
   },
   {
@@ -39,7 +60,7 @@ export const sideBarMenu = [
     href: "/dashboard/account",
     icon: ManageAccountsIcon,
   },
-  
+
 ]
 
 

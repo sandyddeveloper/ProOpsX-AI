@@ -11,6 +11,7 @@ const sampleProject = {
   ],
   category: "Web App",
   status: "In Progress" as const,
+  github: "https://github:developer/"
 };
 
 const ProjectPage = () => {

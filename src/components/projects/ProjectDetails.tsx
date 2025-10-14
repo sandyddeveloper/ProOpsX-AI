@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { Users, User, Tag, Layers } from "lucide-react";
+import { Users, User, Tag, Layers, Github } from "lucide-react";
 import InviteModal from "../forms/modal/InviteModal";
 import TaskBoard from "./TaskBoard";
 
@@ -16,6 +16,7 @@ interface ProjectDetailsProps {
   lead: string;
   members: Member[];
   category: string;
+  github: string;
   status: "In Progress" | "Completed" | "Pending" | "On Hold";
 }
 
@@ -26,62 +27,56 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
   members,
   category,
   status,
+  github
 }) => {
-  // Status color mapping
   const statusStyles: Record<string, string> = {
-    "In Progress": "bg-yellow-500/20 text-yellow-400 border border-yellow-500/40",
-    Completed: "bg-green-500/20 text-green-400 border border-green-500/40",
-    Pending: "bg-red-500/20 text-red-400 border border-red-500/40",
-    "On Hold": "bg-gray-500/20 text-gray-400 border border-gray-500/40",
+    "In Progress": "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-600/40",
+    Completed: "bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-600/40",
+    Pending: "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600/40",
+    "On Hold": "bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600/40",
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleInvite = (values: string[]) => {
-    console.log("Invited members:", values);
-  };
+  const handleInvite = (values: string[]) => console.log("Invited members:", values);
 
-
-
-  // Shortcut: Ctrl + I
   useEffect(() => {
     const handleShortcut = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "i") {
-        setIsModalOpen(true);
-      }
+      if (e.ctrlKey && e.key === "i") setIsModalOpen(true);
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
+
   return (
     <>
-      <div className="text-gray-200 px-4 sm:px-8">
+      <div className="px-4 sm:px-8 text-gray-900 dark:text-gray-200">
         {/* Project Header */}
-        <div className="space-y-2 border-b border-gray-700 pb-4">
+        <div className="space-y-2 border-b border-gray-200 dark:border-gray-700 pb-4">
           <div className="flex items-center gap-2">
-            <Layers className="w-6 h-6 text-green-400" />
+            <Layers className="w-6 h-6 text-green-600 dark:text-green-400" />
             <h1 className="text-xl sm:text-2xl font-semibold">{title}</h1>
           </div>
-          <p className="text-sm sm:text-base text-gray-400">{description}</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{description}</p>
         </div>
 
         {/* Project Info */}
         <div className="mt-6 space-y-5">
           {/* Project Lead */}
           <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-gray-400" />
-            <span className="text-gray-400">Project Lead:</span>
-            <span className="font-medium text-white">{lead}</span>
+            <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Project Lead:</span>
+            <span className="font-medium text-gray-900 dark:text-white">{lead}</span>
           </div>
 
           {/* Members */}
           <div className="flex items-center gap-3 flex-wrap">
-            <Users className="w-5 h-5 text-gray-400" />
-            <span className="text-gray-400">Members:</span>
+            <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Members:</span>
             <div className="flex items-center gap-2">
               {(members ?? []).map((m) => (
                 <div
                   key={m.id}
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 border border-gray-600 text-sm font-medium text-white"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   {m.initials}
                 </div>
@@ -90,7 +85,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
               {/* Invite Button */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-3 py-1 rounded-md border border-gray-600 text-sm flex items-center gap-1 hover:bg-gray-800 transition"
+                className="px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 text-sm flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
               >
                 Invite <span className="font-bold">+</span>
               </button>
@@ -105,20 +100,36 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
           {/* Category */}
           <div className="flex items-center gap-2">
-            <Tag className="w-5 h-5 text-gray-400" />
-            <span className="text-gray-400">Category:</span>
-            <span className="font-medium text-white">{category}</span>
+            <Tag className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Category:</span>
+            <span className="font-medium text-gray-900 dark:text-white">{category}</span>
           </div>
 
           {/* Status */}
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-gray-400" />
-            <span className="text-gray-400">Status:</span>
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}
-            >
+            <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Status:</span>
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}>
               {status}
             </span>
+          </div>
+
+          {/* GitHub */}
+          <div className="flex items-center gap-2">
+            <Github className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">GitHub:</span>
+            {github ? (
+              <a
+                href={github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-gray-900 dark:text-white hover:underline"
+              >
+                {github.split('/').filter(Boolean).slice(-2).join('/')}
+              </a>
+            ) : (
+              <span className="font-medium text-gray-500 dark:text-gray-400">Not provided</span>
+            )}
           </div>
         </div>
       </div>

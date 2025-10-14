@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Grid,
@@ -10,43 +10,21 @@ import {
   FolderOpen,
   Filter,
 } from "lucide-react";
+import { fetchProjects } from "@/app/api/projects";
+
 
 interface Project {
   id: number;
   title: string;
+  category: { id: number; name: string };
   description: string;
-  tags: string[];
+  tags: { id: number; name: string }[];
   date: string;
 }
 
-const sampleProjects: Project[] = [
-  {
-    id: 1,
-    title: "Bug Tracker",
-    description:
-      "A complete bug tracking system with roles, assignments, and insights.",
-    tags: ["Django", "React"],
-    date: "2025-09-12",
-  },
-  {
-    id: 2,
-    title: "E-Commerce App",
-    description:
-      "Full-stack e-commerce solution with product management, cart, and payments.",
-    tags: ["Next.js", "MySQL"],
-    date: "2025-08-28",
-  },
-  {
-    id: 3,
-    title: "Gallery System",
-    description:
-      "Photo gallery with authentication, admin upload control, and viewing tools.",
-    tags: ["Django", "Tailwind"],
-    date: "2025-07-14",
-  },
-];
 
 export default function ProjectsBox() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
   const [tagFilter, setTagFilter] = useState("");
@@ -54,8 +32,20 @@ export default function ProjectsBox() {
   const [endDate, setEndDate] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const allTags = Array.from(new Set(sampleProjects.flatMap((p) => p.tags)));
+  useEffect(() => {
+    const getProjects = async () => {
+      setLoading(true);
+      const data = await fetchProjects();
+      if (data) setProjects(data);
+      setLoading(false);
+    };
+
+    getProjects();
+  }, []);
+
+  const allTags = Array.from(new Set(projects.flatMap((p) => p.tags.map(t => t.name))));
 
   const clearFilters = () => {
     setSearch("");
@@ -65,12 +55,14 @@ export default function ProjectsBox() {
     setSortOrder("newest");
   };
 
-  const filteredProjects = sampleProjects
+  const filteredProjects = projects
     .filter((p) => {
       const matchesSearch = p.title
         .toLowerCase()
         .includes(search.toLowerCase());
-      const matchesTag = !tagFilter || p.tags.includes(tagFilter);
+      const matchesTag =
+        !tagFilter || p.tags.some((tag) => tag.name === tagFilter);
+
       const projectDate = new Date(p.date);
       const matchesDate =
         (!startDate || projectDate >= new Date(startDate)) &&
@@ -172,7 +164,9 @@ export default function ProjectsBox() {
         <div className="p-5 flex flex-col gap-5 overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
           {/* Search */}
           <div>
-            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Search</label>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Search
+            </label>
             <input
               type="text"
               placeholder="Search projects..."
@@ -184,7 +178,9 @@ export default function ProjectsBox() {
 
           {/* Tag Filter */}
           <div>
-            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Tags</label>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Tags
+            </label>
             <CustomSelect
               value={tagFilter}
               onChange={setTagFilter}
@@ -198,7 +194,9 @@ export default function ProjectsBox() {
           {/* Date Range */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Start Date</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                Start Date
+              </label>
               <input
                 type="date"
                 value={startDate}
@@ -207,7 +205,9 @@ export default function ProjectsBox() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">End Date</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                End Date
+              </label>
               <input
                 type="date"
                 value={endDate}
@@ -219,7 +219,9 @@ export default function ProjectsBox() {
 
           {/* Sort Order */}
           <div>
-            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Sort By</label>
+            <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Sort By
+            </label>
             <CustomSelect
               value={sortOrder}
               onChange={setSortOrder}
@@ -240,9 +242,10 @@ export default function ProjectsBox() {
         </div>
       </div>
 
-
-      {/* Projects */}
-      {filteredProjects.length === 0 ? (
+      {/* Loading State */}
+      {loading ? (
+        <div className="text-center py-20 text-gray-500">Loading projects...</div>
+      ) : filteredProjects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center text-gray-500">
           <FolderOpen className="h-16 w-16 mb-4 text-gray-400" />
           <h3 className="text-lg font-semibold">No Projects Found</h3>
@@ -259,28 +262,46 @@ export default function ProjectsBox() {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="rounded-2xl border shadow-md hover:shadow-lg transition p-4"
+              className="group border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-500 transition-all duration-300 p-5 flex flex-col justify-between"
             >
+              {/* Category Label */}
+              <div className="flex justify-between items-start mb-3">
+                <span className="text-xs font-medium bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
+                  <span className="text-xs font-medium bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
+                    {project.category?.name || "Uncategorized"}
+                  </span>
+
+                </span>
+                <p className="text-xs text-gray-400">{project.date}</p>
+              </div>
+
+              {/* Title */}
               <Link href={`/dashboard/project/${project.id}`}>
-                <h3 className="text-lg font-bold mb-2 text-black dark:text-white  hover:underline">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 transition-colors duration-200 mb-2">
                   {project.title}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-600 line-clamp-3">
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
                 {project.description}
               </p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {project.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <p className="text-xs text-gray-400 mt-2">{project.date}</p>
+
+              {/* Tags Section */}
+              {project.tags && project.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-purple-100 hover:text-purple-700 transition"
+                    >
+                      #{tag.name}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
+
           ))}
         </div>
       )}

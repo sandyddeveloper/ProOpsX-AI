@@ -335,7 +335,7 @@ const IssueDetailsPage: React.FC<IssueDetailsPageProps> = ({
     };
 
     return (
-        <div className="p-4 text-white flex flex-col lg:flex-row gap-6">
+        <div className="px-4 text-white flex flex-col lg:flex-row gap-6">
             {/* Left Section */}
             <div className="flex-1 space-y-6" {...swipeHandlers}>
                 {/* Title */}

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface User {
   username: string;
   email: string;
-  role?: string; 
+  role?: string;
 }
 
-export function useUser(withRole: boolean = false) {
+export function useUser(withRole: boolean = false, redirectIfUnauthenticated: boolean = false) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const formatRole = (role: string) => {
     if (!role) return "";
@@ -36,14 +38,20 @@ export function useUser(withRole: boolean = false) {
           role,
         });
       } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch user");
+        const message = err.response?.data?.message || "Failed to fetch user";
+        setError(message);
+
+        // 👇 Automatically redirect to signin if not authenticated
+        if (redirectIfUnauthenticated) {
+          router.push("/auth/signin");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchUser();
-  }, [withRole]);
+  }, [withRole, redirectIfUnauthenticated, router]);
 
   return { user, loading, error };
 }
