@@ -10,8 +10,8 @@ const shortcuts = [
 
 export default function Shortcut() {
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-4 sm:p-8">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">
+    <div className="min-h-screen text-gray-100 p-4 sm:p-8">
+      <h1 className="text-2xl text-black dark:text-white sm:text-3xl font-semibold mb-6 text-center">
         Keyboard Shortcuts
       </h1>
 
@@ -39,7 +39,7 @@ export default function Shortcut() {
       </div>
 
       {/* Optional fixed tip at bottom */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800/90 text-gray-300 px-4 py-2 rounded-lg shadow-md border border-gray-700 text-sm">
+      <div className="fixed bottom-[50px] left-1/2 -translate-x-1/2 bg-gray-800/90 text-gray-300 px-4 py-2 rounded-lg shadow-md border border-gray-700 text-sm">
         Press <kbd className="bg-gray-700 px-1 rounded">Ctrl</kbd> +{" "}
         <kbd className="bg-gray-700 px-1 rounded">?</kbd> to view shortcuts anytime
       </div>

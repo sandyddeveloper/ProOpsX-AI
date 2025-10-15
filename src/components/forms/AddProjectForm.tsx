@@ -117,82 +117,110 @@ const AddProjectForm: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 text-gray-900 dark:text-gray-100">
+    <div className="w-full  mx-auto sm:px-6 text-gray-900 dark:text-gray-100">
       <h1 className="text-2xl font-bold mb-4">Add New Project</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <input
-          type="text"
-          placeholder="Project Name"
-          value={projectName}
-          onChange={(e) => setProjectName(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-
-        <textarea
-          placeholder="Project Description"
-          rows={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-
-        {/* Category selector */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Category</label>
-          <button
-            type="button"
-            onClick={() => setIsCategoryOpen(true)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-neutral-900 text-left hover:ring-1 hover:ring-indigo-500 transition"
-          >
-            {selectedCategory ? selectedCategory.name : "Select a category"}
-          </button>
-        </div>
-
-        {/* Tags selector */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Tech Stack</label>
-          <button
-            type="button"
-            onClick={() => setIsTagsOpen(true)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-neutral-900 text-left hover:ring-1 hover:ring-indigo-500 transition"
-          >
-            {selectedTags.length > 0 ? "Edit selected technologies" : "Select technologies"}
-          </button>
-
-          {/* Selected Tags */}
-          <div className="flex flex-wrap gap-2 mt-3">
-            {selectedTags.map((tag) => (
-              <span key={tag.id} className="flex items-center gap-1 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm">
-                {tag.name}
-                <button
-                  type="button"
-                  onClick={() => setSelectedTags(selectedTags.filter((t) => t.id !== tag.id))}
-                  className="ml-1"
-                >
-                  <X size={14} />
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <input
-          type="url"
-          placeholder="GitHub Repository Link"
-          value={githubLink}
-          onChange={(e) => setGithubLink(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full px-6 py-3 rounded-lg bg-black hover:bg-gray-800 text-white font-semibold shadow-lg transition"
+      <div className="max-w-6xl mx-auto mt-10 sm:max-w-full">
+        {/* place the form code here */}
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6   p-6 rounded-xl shadow-lg"
         >
-          {loading ? "Creating..." : "Create Project"}
-        </button>
-      </form>
+          {/* Left Column */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-lg font-medium mb-2">Project Name</label>
+              <input
+                type="text"
+                placeholder="Enter project name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-lg font-medium mb-2">Category</label>
+              <button
+                type="button"
+                onClick={() => setIsCategoryOpen(true)}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-left hover:ring-1 hover:ring-indigo-500 transition"
+              >
+                {selectedCategory ? selectedCategory.name : "Select a category"}
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-lg font-medium mb-2">Tech Stack</label>
+              <button
+                type="button"
+                onClick={() => setIsTagsOpen(true)}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-left hover:ring-1 hover:ring-indigo-500 transition"
+              >
+                {selectedTags.length > 0 ? "Edit selected technologies" : "Select technologies"}
+              </button>
+
+              {/* Selected Tags */}
+              {selectedTags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {selectedTags.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className="flex items-center gap-1 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm"
+                    >
+                      {tag.name}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTags(selectedTags.filter((t) => t.id !== tag.id))}
+                        className="ml-1"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-lg font-medium mb-2">Project Description</label>
+              <textarea
+                placeholder="Describe your project..."
+                rows={5}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-lg font-medium mb-2">GitHub Repository Link</label>
+              <input
+                type="url"
+                placeholder="https://github.com/username/repo"
+                value={githubLink}
+                onChange={(e) => setGithubLink(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        </form>
+        <div className="pt-4">
+          <button
+            onClick={handleSubmit}
+
+            disabled={loading}
+            className="w-full px-6 py-3 rounded-lg bg-black hover:bg-gray-800 text-white font-semibold shadow-lg transition disabled:opacity-50"
+          >
+            {loading ? "Creating..." : "Create Project"}
+          </button>
+        </div>
+
+      </div>
+
 
       {/* Popup */}
       <AnimatePresence>

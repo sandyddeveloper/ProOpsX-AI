@@ -6,6 +6,8 @@ import { Button } from "@mui/material";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import EditProjectModal from "@/components/projects/EditProjectModal";
 import DeleteConfirmModal from "@/components/projects/DeleteConfirmModal";
+import { FolderOpen } from "lucide-react";
+import Loader from "@/components/ui/loader";
 
 
 interface Category {
@@ -90,9 +92,13 @@ const ProjectManagementPage: React.FC = () => {
             </div>
 
             {loading ? (
-                <p className="text-gray-500 text-center mt-10">Loading projects...</p>
+                <Loader />
             ) : projects.length === 0 ? (
-                <p className="text-gray-500 text-center mt-10">No projects found.</p>
+                <div className="flex flex-col items-center justify-center py-20 text-center text-gray-500">
+                    <FolderOpen className="h-16 w-16 mb-4 text-gray-400" />
+                    <h3 className="text-lg font-semibold">No Projects Found</h3>
+                    <p className="text-sm">Try adjusting your filters or search terms.</p>
+                </div>
             ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project) => (
