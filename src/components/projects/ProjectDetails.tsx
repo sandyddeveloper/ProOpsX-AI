@@ -1,39 +1,53 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { Users, User, Tag, Layers, Github } from "lucide-react";
 import InviteModal from "../forms/modal/InviteModal";
 import TaskBoard from "./TaskBoard";
 
-interface Member {
+interface TeamMember {
   id: number;
-  name: string;
-  initials: string;
+  username: string;
+  email?: string;
 }
 
 interface ProjectDetailsProps {
+  id: number;
   title: string;
   description: string;
-  lead: string;
-  members: Member[];
-  category: string;
-  github: string;
-  status: "In Progress" | "Completed" | "Pending" | "On Hold";
+  githubLink?: string;
+  owner: {
+    id: number;
+    username: string;
+    email?: string;
+  };
+  category?: {
+    id: number;
+    name: string;
+  };
+  tags?: { id: number; name: string }[];
+  team?: TeamMember[];
+  status?: "In Progress" | "Completed" | "Pending" | "On Hold";
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({
   title,
   description,
-  lead,
-  members,
+  githubLink,
+  owner,
   category,
-  status,
-  github
+  tags = [],
+  team = [],
+  status = "In Progress",
 }) => {
   const statusStyles: Record<string, string> = {
-    "In Progress": "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-600/40",
-    Completed: "bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-600/40",
-    Pending: "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600/40",
-    "On Hold": "bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600/40",
+    "In Progress":
+      "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-600/40",
+    Completed:
+      "bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-300 dark:border-green-600/40",
+    Pending:
+      "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600/40",
+    "On Hold":
+      "bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600/40",
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +70,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
             <Layers className="w-6 h-6 text-green-600 dark:text-green-400" />
             <h1 className="text-xl sm:text-2xl font-semibold">{title}</h1>
           </div>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{description}</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            {description}
+          </p>
         </div>
 
         {/* Project Info */}
@@ -65,22 +81,29 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
           <div className="flex items-center gap-2">
             <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <span className="text-gray-600 dark:text-gray-400">Project Lead:</span>
-            <span className="font-medium text-gray-900 dark:text-white">{lead}</span>
+            <span className="font-medium text-gray-900 dark:text-white">
+              {owner?.username || "Unknown"}
+            </span>
           </div>
 
           {/* Members */}
           <div className="flex items-center gap-3 flex-wrap">
             <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            <span className="text-gray-600 dark:text-gray-400">Members:</span>
+            <span className="text-gray-600 dark:text-gray-400">Team:</span>
             <div className="flex items-center gap-2">
-              {(members ?? []).map((m) => (
-                <div
-                  key={m.id}
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  {m.initials}
-                </div>
-              ))}
+              {team.length > 0 ? (
+                team.map((m) => (
+                  <div
+                    key={m.id}
+                    title={m.username}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {m.username.charAt(0).toUpperCase()}
+                  </div>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">No members yet</span>
+              )}
 
               {/* Invite Button */}
               <button
@@ -102,14 +125,36 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
           <div className="flex items-center gap-2">
             <Tag className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <span className="text-gray-600 dark:text-gray-400">Category:</span>
-            <span className="font-medium text-gray-900 dark:text-white">{category}</span>
+            <span className="font-medium text-gray-900 dark:text-white">
+              {category?.name || "No category"}
+            </span>
+          </div>
+
+          {/* Tags */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Tag className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="text-gray-600 dark:text-gray-400">Tags:</span>
+            {tags.length > 0 ? (
+              tags.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-xs font-medium"
+                >
+                  {tag.name}
+                </span>
+              ))
+            ) : (
+              <span className="text-gray-500 text-sm">No tags</span>
+            )}
           </div>
 
           {/* Status */}
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <span className="text-gray-600 dark:text-gray-400">Status:</span>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}
+            >
               {status}
             </span>
           </div>
@@ -118,21 +163,25 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
           <div className="flex items-center gap-2">
             <Github className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             <span className="text-gray-600 dark:text-gray-400">GitHub:</span>
-            {github ? (
+            {githubLink ? (
               <a
-                href={github}
+                href={githubLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-gray-900 dark:text-white hover:underline"
               >
-                {github.split('/').filter(Boolean).slice(-2).join('/')}
+                {githubLink.split("/").slice(-2).join("/")}
               </a>
             ) : (
-              <span className="font-medium text-gray-500 dark:text-gray-400">Not provided</span>
+              <span className="font-medium text-gray-500 dark:text-gray-400">
+                Not provided
+              </span>
             )}
           </div>
         </div>
       </div>
+
+      {/* Task Board */}
       <TaskBoard />
     </>
   );

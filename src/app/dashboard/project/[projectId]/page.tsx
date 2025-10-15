@@ -6,70 +6,90 @@ import ProjectDetails from "@/components/projects/ProjectDetails";
 import { useParams } from "next/navigation";
 import { Loader2, AlertCircle } from "lucide-react";
 
-interface Member {
+// The structure expected by ProjectDetails
+interface TeamMember {
   id: number;
-  name: string;
-  initials: string;
+  username: string;
+  email?: string;
 }
 
-interface Project {
+interface ProjectDetailsProps {
   id: number;
   title: string;
   description: string;
-  lead: string;
-  members: Member[];
-  category: string;
-  status: "In Progress" | "Completed" | "Pending";
-  github: string;
+  githubLink: string;
+  owner: {
+    id: number;
+    username: string;
+    email?: string;
+  };
+  category?: {
+    id: number;
+    name: string;
+  };
+  tags?: { id: number; name: string }[];
+  team?: TeamMember[];
+  status?: "In Progress" | "Completed" | "Pending" | "On Hold";
 }
 
 const ProjectPage = () => {
-  const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const { projectId } = useParams();
 
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<ProjectDetailsProps | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!projectId) return;
 
     const fetchProject = async () => {
       try {
         setLoading(true);
+        console.log("🚀 Fetching from backend:", `http://localhost:8080/api/projects/${projectId}`);
 
-        const response = await axios.get(`http://localhost:8080/api/projects/552`, {
+        const response = await axios.get(`http://localhost:8080/api/projects/${projectId}`, {
           withCredentials: true,
         });
 
-        // 🩵 Log structure once
-        console.log("✅ Project API response:", response.data);
+        const data = response.data;
+        console.log("✅ Project API response:", data);
 
-        // Some APIs wrap actual object inside `data`
-        const projectData =
-          response.data?.data && typeof response.data.data === "object"
-            ? response.data.data
-            : response.data;
+        const formattedProject: ProjectDetailsProps = {
+          id: data.id || 0,
+          title: data.title || "Untitled Project",
+          description: data.description || "No description provided.",
+          owner: {
+            id: data.owner?.id || 0,
+            username: data.owner?.username || "Unknown",
+            email: data.owner?.email || "",
+          },
+          team: (data.team || []).map((m: any) => ({
+            id: m.id,
+            username: m.username || "Unnamed",
+            email: m.email || "",
+          })),
+          category: data.category
+            ? { id: data.category.id, name: data.category.name }
+            : { id: 0, name: "Uncategorized" },
+          tags: Array.isArray(data.tags)
+            ? data.tags.map((t: any) => ({ id: t.id, name: t.name }))
+            : [],
+          githubLink: data.githubLink || "",
+          status: "In Progress",
+        };
 
-        if (!projectData || !projectData.id) {
-          throw new Error("Invalid project data structure");
-        }
 
-        setProject(projectData);
+        setProject(formattedProject);
       } catch (err: any) {
-        console.error("❌ Error fetching project:", err);
-        const message =
-          err?.response?.data?.message ||
-          err?.message ||
-          "Failed to fetch project details.";
-        setError(message);
+        console.error("❌ Fetch error:", err);
+        setError("Failed to fetch project details. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProject();
-  }, [id]);
+  }, [projectId]);
 
   if (loading) {
     return (
