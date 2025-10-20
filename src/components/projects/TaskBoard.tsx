@@ -1,216 +1,217 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
+import { SortableItem } from "./Issue/SortableItem";
 import CreateIssueModal from "../forms/modal/CreateTaskModal";
-import { User } from "lucide-react";
 
-
-interface Task {
-    id: number;
-    title: string;
-    tag: string;
-    status: "todo" | "inprogress" | "completed";
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: "Pending" | "In Progress" | "Resolved";
+  position: number;
 }
 
+const statusMeta = {
+  Pending: { title: "To Do", color: "bg-red-50 text-red-700 ring-red-200" },
+  "In Progress": {
+    title: "In Progress",
+    color: "bg-yellow-50 text-yellow-800 ring-yellow-200",
+  },
+  Resolved: {
+    title: "Completed",
+    color: "bg-green-50 text-green-700 ring-green-200",
+  },
+};
+
 const TaskBoard: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([
-        { id: 1, title: "Create Navbar", tag: "FBP - 1", status: "todo" },
-        { id: 2, title: "Fix Bugs", tag: "FBP - 2", status: "inprogress" },
-        { id: 3, title: "Deploy App", tag: "FBP - 3", status: "completed" },
-    ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const pathname = usePathname();
+  const projectId = Number(pathname?.split("/").filter(Boolean).pop() ?? NaN);
 
-    const [newTaskTitle, setNewTaskTitle] = useState("");
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const axiosInstance = axios.create({
+    baseURL: "http://localhost:8080",
+    withCredentials: true,
+    headers: { "Content-Type": "application/json" },
+  });
 
-    const [issueTitle, setIssueTitle] = useState("");
-    const [issueDesc, setIssueDesc] = useState("");
+  const columns: Task["status"][] = ["Pending", "In Progress", "Resolved"];
 
-    const handleCreateIssue = () => {
-        console.log("Creating Issue:", issueTitle, issueDesc);
-        setShowCreateModal(false);
-        setIssueTitle("");
-        setIssueDesc("");
-    };
+  const fetchTasks = async () => {
+    if (!projectId) return;
+    try {
+      const res = await axiosInstance.get(`/api/issues/project/${projectId}`);
+      const issues: Task[] = res.data.map((issue: any) => ({
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        status: issue.status as Task["status"],
+        position: issue.position ?? 0,
+      }));
+      setTasks(issues);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load issues");
+    }
+  };
 
-    const menuRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  useEffect(() => {
+    fetchTasks();
+  }, [projectId]);
 
-    const moveTask = (id: number, newStatus: Task["status"]) => {
-        setTasks((prev) =>
-            prev.map((t) => (t.id === id ? { ...t, status: newStatus } : t))
-        );
-        setOpenMenuId(null);
-    };
+  const sensors = useSensors(useSensor(PointerSensor));
 
-    const deleteTask = (id: number) => {
-        setTasks((prev) => prev.filter((t) => t.id !== id));
-        setOpenMenuId(null);
-    };
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = Number(active.id);
+    const overId = Number(over.id);
+    if (activeId === overId) return;
 
-    const addTask = () => {
-        if (!newTaskTitle.trim()) return;
-        const newTask: Task = {
-            id: Date.now(),
-            title: newTaskTitle,
-            tag: `FBP - ${tasks.length + 1}`,
-            status: "todo",
-        };
-        setTasks((prev) => [...prev, newTask]);
-        setNewTaskTitle("");
-        setShowCreateModal(false);
-    };
+    const activeTask = tasks.find((t) => t.id === activeId);
+    const overTask = tasks.find((t) => t.id === overId);
+    if (!activeTask || !overTask) return;
 
-    const onDragStart = (e: React.DragEvent, id: number) => {
-        e.dataTransfer.setData("taskId", id.toString());
-    };
+    let newTasks = [...tasks];
 
-    const onDrop = (e: React.DragEvent, newStatus: Task["status"]) => {
-        const id = parseInt(e.dataTransfer.getData("taskId"), 10);
-        moveTask(id, newStatus);
-    };
+    if (activeTask.status === overTask.status) {
+      const columnTasks = newTasks
+        .filter((t) => t.status === activeTask.status)
+        .sort((a, b) => a.position - b.position);
+      const oldIndex = columnTasks.findIndex((t) => t.id === activeTask.id);
+      const newIndex = columnTasks.findIndex((t) => t.id === overTask.id);
+      const reordered = arrayMove(columnTasks, oldIndex, newIndex);
+      reordered.forEach((task, idx) => {
+        task.position = idx;
+        const idxAll = newTasks.findIndex((t) => t.id === task.id);
+        newTasks[idxAll] = task;
+      });
+    } else {
+      // cross-column move
+      newTasks = newTasks.filter((t) => t.id !== activeTask.id);
+      const targetColumn = newTasks
+        .filter((t) => t.status === overTask.status)
+        .sort((a, b) => a.position - b.position);
+      const movedTask = { ...activeTask, status: overTask.status };
+      const insertIndex = targetColumn.findIndex((t) => t.id === overTask.id);
+      targetColumn.splice(insertIndex, 0, movedTask);
 
-    const allowDrop = (e: React.DragEvent) => e.preventDefault();
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (openMenuId !== null) {
-                const currentMenu = menuRefs.current.get(openMenuId);
-                if (currentMenu && !currentMenu.contains(event.target as Node)) {
-                    setOpenMenuId(null);
-                }
-            }
+      const updated = newTasks.map((t) => ({ ...t }));
+      const targetIds = targetColumn.map((t) => t.id);
+      targetColumn.forEach((task, idx) => {
+        const idxAll = updated.findIndex((x) => x.id === task.id);
+        if (idxAll !== -1) {
+          updated[idxAll].position = idx;
+          updated[idxAll].status = task.status;
         }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [openMenuId]);
+      });
+      const sourceColumn = updated
+        .filter((t) => t.status === activeTask.status)
+        .sort((a, b) => a.position - b.position);
+      sourceColumn.forEach((task, idx) => {
+        const idxAll = updated.findIndex((x) => x.id === task.id);
+        if (idxAll !== -1) updated[idxAll].position = idx;
+      });
 
-    const renderTaskCard = (task: Task) => (
-        <div
-            key={task.id}
-            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-4 rounded-xl shadow-md flex flex-col gap-2 hover:scale-[1.02] transition-transform cursor-grab"
-            draggable
-            onDragStart={(e) => onDragStart(e, task.id)}
-        >
-            <div className="flex justify-between items-center">
-                <h3 className="text-gray-900 dark:text-white font-semibold">
-                    {task.title}
-                </h3>
+      newTasks = updated;
 
-                {/* Menu Button + Dropdown */}
-                <div
-                    className="relative"
-                    ref={(el) => {
-                        if (el) menuRefs.current.set(task.id, el);
-                        else menuRefs.current.delete(task.id);
-                    }}
-                >
+      // ✅ immediately update backend for status change
+      try {
+        await axiosInstance.put(
+          `/api/issues/${activeTask.id}/status/${encodeURIComponent(overTask.status)}`
+        );
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to update status");
+      }
+    }
+
+    const previousTasks = [...tasks];
+    setTasks(newTasks);
+
+    const payload = newTasks.map((t) => ({
+      id: t.id,
+      position: t.position,
+      status: t.status,
+    }));
+
+    try {
+      await axiosInstance.put("/api/issues/reorder", payload);
+      toast.success("Order updated");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save order");
+      setTasks(previousTasks); // rollback
+    }
+  };
+
+  return (
+    <div className="px-4 py-6">
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <div className="flex gap-4 overflow-x-auto md:grid md:grid-cols-3 md:gap-6">
+          {columns.map((status) => {
+            const columnTasks = tasks
+              .filter((t) => t.status === status)
+              .sort((a, b) => a.position - b.position);
+
+            return (
+              <div key={status} className="min-w-[280px] md:min-w-0">
+                <div className={`rounded-xl p-4 ring-1 ring-inset ${statusMeta[status].color}`}>
+                  <h2 className="text-sm font-semibold mb-3">{statusMeta[status].title}</h2>
+
+                  <SortableContext
+                    items={columnTasks.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {columnTasks.map((task) => (
+                      <SortableItem
+                        key={task.id}
+                        task={task}
+                        fetchTasks={fetchTasks}
+                        projectId={projectId}
+                      />
+                    ))}
+                  </SortableContext>
+
+                  {/* Only show Create button for "In Progress" column */}
+                  {status === "Pending" && (
                     <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuId(openMenuId === task.id ? null : task.id);
-                        }}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700"
+                      onClick={() => setShowCreateModal(true)}
+                      className="mt-4 w-full px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-sm font-medium"
                     >
-                        ⋮
+                      + Create Issue
                     </button>
-
-                    {openMenuId === task.id && (
-                        <div className="absolute right-0 mt-2 w-32 flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 text-sm z-10 border border-gray-200 dark:border-gray-700">
-                            {task.status !== "todo" && (
-                                <button
-                                    onClick={() => moveTask(task.id, "todo")}
-                                    className="text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                                >
-                                    To Do
-                                </button>
-                            )}
-                            {task.status !== "inprogress" && (
-                                <button
-                                    onClick={() => moveTask(task.id, "inprogress")}
-                                    className="text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                                >
-                                    In Progress
-                                </button>
-                            )}
-                            {task.status !== "completed" && (
-                                <button
-                                    onClick={() => moveTask(task.id, "completed")}
-                                    className="text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                                >
-                                    Done
-                                </button>
-                            )}
-                            <button className="text-left px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                                Edit
-                            </button>
-                            <button
-                                onClick={() => deleteTask(task.id)}
-                                className="text-left px-2 py-1 hover:bg-red-100 dark:hover:bg-red-700 rounded text-red-600 dark:text-red-400"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    )}
+                  )}
                 </div>
-            </div>
+              </div>
+            );
+          })}
 
-            <span className="text-gray-600 dark:text-gray-400 text-sm">{task.tag}</span>
-
-            <div className="flex justify-end">
-                <div className="w-7 h-7 flex items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-full text-gray-900 dark:text-white">
-                    <User />
-                </div>
-            </div>
         </div>
-    );
+      </DndContext>
 
-    const columns = [
-        { key: "todo", title: "To Do" },
-        { key: "inprogress", title: "In Progress" },
-        { key: "completed", title: "Completed" },
-    ];
-
-    return (
-        <div className="px-6 pt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {columns.map((col) => (
-                <div
-                    key={col.key}
-                    className="flex flex-col gap-4 p-2 rounded-xl"
-                    onDragOver={allowDrop}
-                    onDrop={(e) => onDrop(e, col.key as Task["status"])}
-                >
-                    <h2
-                        className={`text-lg font-semibold ${col.key === "completed"
-                            ? "text-green-600 dark:text-green-400"
-                            : "text-gray-900 dark:text-white"
-                            }`}
-                    >
-                        {col.title}
-                    </h2>
-
-                    <div className="flex flex-col gap-4 flex-1">
-                        {tasks.filter((t) => t.status === col.key).map(renderTaskCard)}
-                    </div>
-
-                    <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="mt-4 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 flex items-center gap-2"
-                    >
-                        + Create Issue
-                    </button>
-                </div>
-            ))}
-
-            <CreateIssueModal
-                isOpen={showCreateModal}
-                onClose={() => setShowCreateModal(false)}
-                title={issueTitle}
-                setTitle={setIssueTitle}
-                description={issueDesc}
-                setDescription={setIssueDesc}
-                onSubmit={handleCreateIssue}
-            />
-        </div>
-    );
+      <CreateIssueModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onIssueCreated={fetchTasks}
+      />
+    </div>
+  );
 };
 
 export default TaskBoard;

@@ -78,7 +78,7 @@ const ProjectManagementPage: React.FC = () => {
     };
 
     return (
-        <div className="w-full min-h-screen  p-6">
+        <div className="w-full p-6">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                     Project Management
@@ -108,7 +108,7 @@ const ProjectManagementPage: React.FC = () => {
                         >
                             <div>
                                 <h2 className="text-lg font-semibold mb-2 dark:text-white text-black">{project.title}</h2>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-3">
                                     {project.description}
                                 </p>
                                 {project.category && (

@@ -34,3 +34,7 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+
+.scrollbar-thin { scrollbar-width: thin; }
+.scrollbar-thumb-rounded-lg::-webkit-scrollbar { height: 8px; }
