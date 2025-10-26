@@ -188,7 +188,7 @@ const TaskBoard: React.FC = () => {
                     ))}
                   </SortableContext>
 
-                  {/* Only show Create button for "In Progress" column */}
+                 
                   {status === "Pending" && (
                     <button
                       onClick={() => setShowCreateModal(true)}

@@ -1,11 +1,13 @@
 import IssueDetailsPage from "@/components/projects/Issue/IssueDetails";
-import { sampleComments, sampleIssue } from "@/util/data";
 
-
-export default function IssueDetails() {
+export default function IssueDetails({
+  params,
+}: {
+  params: { issueId: string; projectId: string };
+}) {
   return (
-    <div>
-      <IssueDetailsPage issue={sampleIssue} initialComments={sampleComments} />
+    <div className="p-6">
+      <IssueDetailsPage issueId={params.issueId} />
     </div>
   );
 }
